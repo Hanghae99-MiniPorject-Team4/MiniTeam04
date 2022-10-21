@@ -17,38 +17,34 @@ public class PostController {
 
   private final PostService postService;
 
-  @RequestMapping(value = "/api/auth/post", method = RequestMethod.POST)
+  @RequestMapping(value = "/api/auth/posts", method = RequestMethod.POST)
   public ResponseDto<?> createPost(@RequestBody PostRequestDto requestDto,
       HttpServletRequest request) {
     return postService.createPost(requestDto, request);
   }
 
-  @RequestMapping(value = "/api/post/{id}", method = RequestMethod.GET)
+  @RequestMapping(value = "/api/posts/{id}", method = RequestMethod.GET)
   public ResponseDto<?> getPost(@PathVariable Long id) {
     return postService.getPost(id);
   }
 
-  @RequestMapping(value = "/api/post", method = RequestMethod.GET)
+  @RequestMapping(value = "/api/posts", method = RequestMethod.GET)
   public ResponseDto<?> getAllPosts() {
     return postService.getAllPost();
   }
 
-  @RequestMapping(value = "/api/auth/post/{id}", method = RequestMethod.PUT)
+  @RequestMapping(value = "/api/auth/posts/{id}", method = RequestMethod.PUT)
   public ResponseDto<?> updatePost(@PathVariable Long id, @RequestBody PostRequestDto postRequestDto,
       HttpServletRequest request) {
     return postService.updatePost(id, postRequestDto, request);
   }
 
-  @RequestMapping(value = "/api/auth/post/{id}", method = RequestMethod.DELETE)
+  @RequestMapping(value = "/api/auth/posts/{id}", method = RequestMethod.DELETE)
   public ResponseDto<?> deletePost(@PathVariable Long id,
       HttpServletRequest request) {
     return postService.deletePost(id, request);
   }
 
-  @RequestMapping(value = "/api/auth/post", method = RequestMethod.GET)
-  public ResponseDto<?> getAllPostByMember(HttpServletRequest request) {
-    return postService.getAllPostByMember(request);
-  }
 
 
 }

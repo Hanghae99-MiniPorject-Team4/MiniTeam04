@@ -36,9 +36,6 @@ public class Member extends Timestamped {
   @JsonIgnore
   private String password;
 
-  @OneToMany(mappedBy = "member", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
-  private List<Post> postList;
-
   @Override
   public boolean equals(Object o) {
     if (this == o) {
