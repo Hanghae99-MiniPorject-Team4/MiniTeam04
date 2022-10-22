@@ -17,6 +17,8 @@ public class AwsConfiguration {
   @Value("${aws.s3.secret.key}")
   String AWS_S3_SECRET_KEY;
 
+
+
   @Bean
   @Primary
   public AwsBasicCredentials awsS3CredentialProvider() {
