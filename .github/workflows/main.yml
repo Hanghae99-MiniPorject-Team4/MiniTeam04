@@ -4,6 +4,8 @@ name: Java CI with Gradle & Deploy to EC2
 on:
   push:
     branches: [ "main" ]
+    
+permissions: write-all
    
 # flow에서 사용할 변수 같은 느낌입니다.
 env:
@@ -28,9 +30,18 @@ jobs:
         java-version: '11'
         distribution: 'temurin'
         
+    - name: Setup MySQL
+      uses: samin/mysql-action@v1
+      with:
+        character set server: 'utf8' 
+        mysql database: 'Team04' 
+        mysql user: 'admin'
+        mysql password: ${{ secrets.MYSQL_PASSWORD }} # github Secret 탭에서 설정하세요!
+    
     # 3) gradlew 권한 설정
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
+      
      
     # 4) gradle 빌드
     - name: Build with Gradle
@@ -61,3 +72,5 @@ jobs:
           --deployment-config-name CodeDeployDefault.AllAtOnce \
           --deployment-group-name ${{ env.CODE_DEPLOY_DEPLOYMENT_GROUP_NAME }} \
           --s3-location bucket=$S3_BUCKET_NAME,key=$GITHUB_SHA.zip,bundleType=zip
+          
+          
