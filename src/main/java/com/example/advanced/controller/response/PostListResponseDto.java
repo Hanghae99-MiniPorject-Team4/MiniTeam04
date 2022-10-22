@@ -16,7 +16,6 @@ public class PostListResponseDto {
   private String content;
   private String imgUrl;
   private String author;
-  private int likes;
   private int commentsNum;
   private LocalDateTime createdAt;
   private LocalDateTime modifiedAt;

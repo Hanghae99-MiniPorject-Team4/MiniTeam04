@@ -5,7 +5,6 @@ import com.example.advanced.controller.response.CommentResponseDto;
 import com.example.advanced.controller.response.PostListResponseDto;
 import com.example.advanced.controller.response.PostResponseDto;
 import com.example.advanced.controller.response.ResponseDto;
-import com.example.advanced.controller.response.SubCommentResponseDto;
 import com.example.advanced.domain.Comment;
 import com.example.advanced.domain.Member;
 import com.example.advanced.domain.Post;
