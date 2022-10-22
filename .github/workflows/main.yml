@@ -11,15 +11,10 @@ env:
   S3_BUCKET_NAME: jueunmybucket
   CODE_DEPLOY_APPLICATION_NAME: team04Deploy
   CODE_DEPLOY_DEPLOYMENT_GROUP_NAME: week6_team04
-  
-permissions:
-  contents: read
 
 jobs:
-  deploy:
-    name: Deploy
+  build:
     runs-on: ubuntu-latest
-    environment: production
 
     steps:
     # 1) 기본 체크아웃
