@@ -5,7 +5,6 @@ import com.example.advanced.controller.response.CommentResponseDto;
 import com.example.advanced.controller.response.PostListResponseDto;
 import com.example.advanced.controller.response.PostResponseDto;
 import com.example.advanced.controller.response.ResponseDto;
-import com.example.advanced.controller.response.SubCommentResponseDto;
 import com.example.advanced.domain.Comment;
 import com.example.advanced.domain.Member;
 import com.example.advanced.domain.Post;
@@ -42,6 +41,7 @@ public class PostService {
         .title(requestDto.getTitle())
         .content(requestDto.getContent())
         .imgUrl(requestDto.getImgUrl())
+        .category(requestDto.getCategory())
         .member(member)
         .build();
     postRepository.save(post);
@@ -52,6 +52,7 @@ public class PostService {
             .content(post.getContent())
             .imgUrl(post.getImgUrl())
             .author(post.getMember().getNickname())
+            .category(post.getCategory())
             .createdAt(post.getCreatedAt())
             .modifiedAt(post.getModifiedAt())
             .build()
@@ -87,6 +88,7 @@ public class PostService {
             .content(post.getContent())
             .author(post.getMember().getNickname())
             .imgUrl(post.getImgUrl())
+            .category(post.getCategory())
             .comments(commentResponseDtoList)
             .createdAt(post.getCreatedAt())
             .modifiedAt(post.getModifiedAt())
@@ -141,6 +143,7 @@ public class PostService {
             .content(post.getContent())
             .imgUrl(post.getImgUrl())
             .author(post.getMember().getNickname())
+            .category(post.getCategory())
             .createdAt(post.getCreatedAt())
             .modifiedAt(post.getModifiedAt())
             .build()

@@ -48,12 +48,12 @@ public class SecurityConfiguration {
         .sessionManagement()
         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 
-        .and()
-        .authorizeRequests()
-        .antMatchers("/api/member/*").permitAll()
-        .antMatchers("/api/post").permitAll()
-        .antMatchers("/api/post/*").permitAll()
-        .antMatchers("/api/comment/*").permitAll()
+        .and().httpBasic().disable()
+        .authorizeRequests().antMatchers("/","/**").permitAll()
+        .antMatchers("/api/members/*").permitAll()
+        .antMatchers("/api/posts").permitAll()
+        .antMatchers("/api/posts/*").permitAll()
+        .antMatchers("/api/comments/*").permitAll()
         .anyRequest().authenticated()
 
         .and()
@@ -61,4 +61,5 @@ public class SecurityConfiguration {
 
     return http.build();
   }
+
 }
