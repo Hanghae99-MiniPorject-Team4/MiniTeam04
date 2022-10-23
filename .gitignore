@@ -25,7 +25,11 @@ bin/
 out/
 !**/src/main/**/out/
 !**/src/test/**/out/
+
+application.properties
+
 aws.properties
+
 
 
 ### NetBeans ###
@@ -37,3 +41,11 @@ aws.properties
 
 ### VS Code ###
 .vscode/
+### Example user template template
+### Example user template
+
+# IntelliJ project files
+.idea
+*.iml
+out
+gen

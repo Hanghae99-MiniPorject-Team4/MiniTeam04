@@ -16,8 +16,10 @@ public class AdvancedApplication {
 
   public static void main(String[] args) {
 
+
     new SpringApplicationBuilder(AdvancedApplication.class)
             .properties(APPLICATION_LOCATIONS)
             .run(args);
   }
+
 }
