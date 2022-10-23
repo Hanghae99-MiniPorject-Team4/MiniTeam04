@@ -9,7 +9,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class File {
+public class Files {
 
     private String fileName;
 
@@ -18,7 +18,7 @@ public class File {
     private int sort;
 
     @Builder
-    public File(String fileName, String fileUrl, int sort) {
+    public Files(String fileName, String fileUrl, int sort) {
         this.fileName = fileName;
         this.fileUrl = fileUrl;
         this.sort = sort;
