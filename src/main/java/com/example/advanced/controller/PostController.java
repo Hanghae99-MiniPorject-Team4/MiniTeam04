@@ -4,23 +4,26 @@ import com.example.advanced.controller.request.PostRequestDto;
 import com.example.advanced.controller.response.ResponseDto;
 import com.example.advanced.service.PostService;
 import javax.servlet.http.HttpServletRequest;
+
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
 
 @RequiredArgsConstructor
 @RestController
 public class PostController {
 
   private final PostService postService;
+  private final PostRequestConverter postRequestConverter;
 
-  @RequestMapping(value = "/api/auth/posts", method = RequestMethod.POST)
-  public ResponseDto<?> createPost(@RequestBody PostRequestDto requestDto,
-      HttpServletRequest request) {
-    return postService.createPost(requestDto, request);
+  @RequestMapping(value = "/api/auth/posts", method = RequestMethod.POST,consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = "application/json")
+  public ResponseDto<?> createPost(@RequestPart(value = "images", required = false) MultipartFile multipartFile,
+                                   @RequestParam(value = "postDto") String requestDto,
+                                   HttpServletRequest request) {
+    PostRequestDto convertedDto = postRequestConverter.convert(requestDto);
+    return postService.createPost(convertedDto, multipartFile, request);
   }
 
   @RequestMapping(value = "/api/posts/{id}", method = RequestMethod.GET)
@@ -34,9 +37,10 @@ public class PostController {
   }
 
   @RequestMapping(value = "/api/auth/posts/{id}", method = RequestMethod.PUT)
-  public ResponseDto<?> updatePost(@PathVariable Long id, @RequestBody PostRequestDto postRequestDto,
-      HttpServletRequest request) {
-    return postService.updatePost(id, postRequestDto, request);
+  public ResponseDto<?> updatePost(@PathVariable Long id,@RequestParam(value = "postDto") String requestDto,
+      HttpServletRequest request,@RequestPart(value = "images", required = false) MultipartFile multipartFile) {
+    PostRequestDto convertedDto = postRequestConverter.convert(requestDto);
+    return postService.updatePost(id, convertedDto, request, multipartFile);
   }
 
   @RequestMapping(value = "/api/auth/posts/{id}", method = RequestMethod.DELETE)

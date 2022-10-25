@@ -1,5 +1,7 @@
 package com.example.advanced.service;
 
+import com.example.advanced.controller.exception.ErrorCode;
+import com.example.advanced.controller.handler.CustomException;
 import com.example.advanced.domain.Member;
 import com.example.advanced.domain.UserDetailsImpl;
 import com.example.advanced.repository.MemberRepository;
@@ -20,6 +22,6 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     Optional<Member> member = memberRepository.findByNickname(username);
     return member
         .map(UserDetailsImpl::new)
-        .orElseThrow(() -> new UsernameNotFoundException("nickname not found"));
+        .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_MEMBER));
   }
 }

@@ -1,26 +1,30 @@
 package com.example.advanced.domain;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+
+import javax.persistence.*;
 
 
+@Builder
 @Getter
-@Setter
 @NoArgsConstructor
+@AllArgsConstructor
+@Entity
 public class Files {
 
-    private String fileName;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-    private String fileUrl;
+    @Column(nullable = false)
+    private String url;
 
-    private int sort;
+    @JoinColumn(name = "member_id", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Member member;
 
-    @Builder
-    public Files(String fileName, String fileUrl, int sort) {
-        this.fileName = fileName;
-        this.fileUrl = fileUrl;
-        this.sort = sort;
-    }
+    @JoinColumn(name = "post_id", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Post post;
+
 }
