@@ -25,7 +25,12 @@ bin/
 out/
 !**/src/main/**/out/
 !**/src/test/**/out/
+
 application.properties
+
+aws.properties
+
+
 
 ### NetBeans ###
 /nbproject/private/
