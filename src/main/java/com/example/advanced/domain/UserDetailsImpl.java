@@ -3,6 +3,8 @@ package com.example.advanced.domain;
 import com.example.advanced.shared.Authority;
 import java.util.ArrayList;
 import java.util.Collection;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -36,22 +38,26 @@ public class UserDetailsImpl implements UserDetails {
   }
 
   @Override
+  @JsonIgnore
   public boolean isAccountNonExpired() {
-    return true;
+    return false;
   }
 
   @Override
+  @JsonIgnore
   public boolean isAccountNonLocked() {
-    return true;
+    return false;
   }
 
   @Override
+  @JsonIgnore
   public boolean isCredentialsNonExpired() {
-    return true;
+    return false;
   }
 
   @Override
+  @JsonIgnore
   public boolean isEnabled() {
-    return true;
+    return false;
   }
 }

@@ -1,5 +1,7 @@
 package com.example.advanced.service;
 
+import com.example.advanced.controller.exception.ErrorCode;
+import com.example.advanced.controller.handler.CustomException;
 import com.example.advanced.controller.request.CommentRequestDto;
 import com.example.advanced.controller.response.CommentResponseDto;
 import com.example.advanced.controller.response.ResponseDto;
@@ -23,18 +25,19 @@ public class CommentService {
   private final CommentRepository commentRepository;
 
   private final TokenProvider tokenProvider;
+
   private final PostService postService;
 
   @Transactional
   public ResponseDto<?> createComment(Long postId, CommentRequestDto requestDto, HttpServletRequest request) {
     Member member = validateMember(request);
     if (null == member) {
-      return ResponseDto.fail("INVALID_TOKEN", "refresh token is invalid");
+      throw new CustomException(ErrorCode.JWT_REFRESH_TOKEN_EXPIRED);
     }
 
     Post post = postService.isPresentPost(postId);
     if (null == post) {
-      return ResponseDto.fail("NOT_FOUND", "post id is not exist");
+      throw new CustomException(ErrorCode.NOT_FOUND_POST);
     }
 
     Comment comment = Comment.builder()
@@ -59,7 +62,7 @@ public class CommentService {
   public ResponseDto<?> getAllCommentsByPost(Long postId) {
     Post post = postService.isPresentPost(postId);
     if (null == post) {
-      return ResponseDto.fail("NOT_FOUND", "post id is not exist");
+      throw new CustomException(ErrorCode.NOT_FOUND_POST);
     }
 
     List<Comment> commentList = commentRepository.findAllByPost(post);
@@ -82,19 +85,19 @@ public class CommentService {
 
   @Transactional
   public ResponseDto<?> updateComment(Long id, CommentRequestDto requestDto, HttpServletRequest request) {
-    Member member = validateMember(request);
+    Member member =  validateMember(request);
     if (null == member) {
-      return ResponseDto.fail("INVALID_TOKEN", "refresh token is invalid");
+      throw new CustomException(ErrorCode.JWT_REFRESH_TOKEN_EXPIRED);
     }
 
 
     Comment comment = isPresentComment(id);
     if (null == comment) {
-      return ResponseDto.fail("NOT_FOUND", "comment id is not exist");
+      throw new CustomException(ErrorCode.NOT_FOUND_COMMENT);
     }
 
     if (comment.validateMember(member)) {
-      return ResponseDto.fail("BAD_REQUEST", "only author can update");
+      throw new CustomException(ErrorCode.NOT_HAVE_PERMISSION);
     }
 
     comment.update(requestDto);
@@ -111,18 +114,18 @@ public class CommentService {
 
   @Transactional
   public ResponseDto<?> deleteComment(Long id, HttpServletRequest request) {
-    Member member = validateMember(request);
+    Member member =  validateMember(request);
     if (null == member) {
-      return ResponseDto.fail("INVALID_TOKEN", "refresh token is invalid");
+      throw new CustomException(ErrorCode.JWT_REFRESH_TOKEN_EXPIRED);
     }
 
     Comment comment = isPresentComment(id);
     if (null == comment) {
-      return ResponseDto.fail("NOT_FOUND", "comment id is not exist");
+      throw new CustomException(ErrorCode.NOT_FOUND_COMMENT);
     }
 
     if (comment.validateMember(member)) {
-      return ResponseDto.fail("BAD_REQUEST", "only author can update");
+      throw new CustomException(ErrorCode.NOT_HAVE_PERMISSION);
     }
 
 

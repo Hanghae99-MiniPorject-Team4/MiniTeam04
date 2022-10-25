@@ -1,25 +1,20 @@
 package com.example.advanced.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import java.util.List;
 import java.util.Objects;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToMany;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+
+import lombok.*;
 import org.hibernate.Hibernate;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Builder
 @Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
@@ -51,5 +46,10 @@ public class Member extends Timestamped {
   @Override
   public int hashCode() {
     return getClass().hashCode();
+  }
+
+
+  public boolean validatePassword(PasswordEncoder passwordEncoder, String password) {
+    return passwordEncoder.matches(password, this.password);
   }
 }
