@@ -11,7 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 public class MutipartToFileConverter {
   public Optional<File> convert(MultipartFile file) throws IOException {
     File convertFile = new File(
-        System.getProperty("user.dir") + file.getOriginalFilename()
+        System.getProperty("user.dir") +"/"+ file.getOriginalFilename()
     );
     if(convertFile.createNewFile()) {
       try (FileOutputStream fos = new FileOutputStream(convertFile)) {

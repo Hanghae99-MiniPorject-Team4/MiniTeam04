@@ -11,7 +11,7 @@ import org.springframework.core.convert.converter.Converter;
 @Component
 public class PostRequestConverter implements Converter<String, PostRequestDto> {
 
-    private ObjectMapper objectMapper;
+    private final ObjectMapper objectMapper;
     public PostRequestConverter(ObjectMapper objectMapper){
         this.objectMapper = objectMapper;
     }

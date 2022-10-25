@@ -7,7 +7,6 @@ import com.example.advanced.controller.exception.ErrorCode;
 import com.example.advanced.controller.exception.FileConvertException;
 import com.example.advanced.controller.exception.RemoveFileException;
 import com.example.advanced.controller.handler.CustomException;
-import com.example.advanced.jwt.TokenProvider;
 import com.example.advanced.shared.MutipartToFileConverter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,10 +14,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import software.amazon.awssdk.services.s3.S3Client;
 
 import java.io.*;
-import java.net.URL;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.util.Objects;
@@ -59,7 +56,7 @@ public class FileService {
                 .replace("Z", "")
                 .replace("[Asia/Seoul]", "");
         String fileName = BUCKET_PATH + now + UUID.randomUUID() + "."
-                + Objects.requireNonNull(multipartFile.getOriginalFilename()).split("\\.")[1];
+                + Objects.toString(multipartFile.getOriginalFilename()).split("\\.")[1];
 
         System.out.println("fileName = " + fileName);
 
@@ -105,7 +102,7 @@ public class FileService {
             is.close();
             os.close();
         } catch (IOException e) {
-            // TODO Auto-generated catch block
+
             e.printStackTrace();
         }
 

@@ -33,6 +33,8 @@ public class SecurityConfiguration {
   private final AuthenticationEntryPointException authenticationEntryPointException;
   private final AccessDeniedHandlerException accessDeniedHandlerException;
 
+  private final CorsConfig corsConfig;
+
   @Bean
   public PasswordEncoder passwordEncoder() {
     return new BCryptPasswordEncoder();
@@ -58,14 +60,24 @@ public class SecurityConfiguration {
 
         .and().httpBasic().disable()
         .authorizeRequests().antMatchers("/","/**").permitAll()
-        .antMatchers("/api/members/*").permitAll()
+        .antMatchers("/api/members/**").permitAll()
         .antMatchers("/api/posts").permitAll()
-        .antMatchers("/api/posts/*").permitAll()
-        .antMatchers("/api/comments/*").permitAll()
-        .antMatchers( "/v2/api-docs","/v3/api-docs/**").permitAll()
+        .antMatchers("/api/posts/**").permitAll()
+        .antMatchers("/api/comments/**").permitAll()
+        .antMatchers( "/v2/api-docs",
+                "/swagger-resources",
+                "/swagger-resources/**",
+                "/configuration/ui",
+                "/configuration/security",
+                "/swagger-ui.html",
+                "/webjars/**",
+                "/v3/api-docs/**",
+                "/swagger-ui/**").permitAll()
         .anyRequest().authenticated()
 
+
         .and()
+        .addFilter(corsConfig.corsFilter())
         .apply(new JwtSecurityConfiguration(SECRET_KEY, tokenProvider, userDetailsService));
 
 
