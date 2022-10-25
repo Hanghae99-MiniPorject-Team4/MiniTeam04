@@ -10,7 +10,7 @@ import org.springframework.web.multipart.MultipartFile;
 @NoArgsConstructor
 public class FileDto {
 
-    private String fileType;
-
+    //private String fileType;
     private MultipartFile file;
+
 }

@@ -26,6 +26,7 @@ public class Post extends Timestamped {
   @Column(nullable = false)
   private String content;
 
+  @Column
   private String images;
 
 
@@ -45,10 +46,6 @@ public class Post extends Timestamped {
   public void update(PostRequestDto postRequestDto) {
     this.title = postRequestDto.getTitle();
     this.content = postRequestDto.getContent();
-  }
-
-  public void update(String images) {
-    this.images = images;
   }
 
   public boolean validateMember(Member member) {

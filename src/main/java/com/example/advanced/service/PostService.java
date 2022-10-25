@@ -35,7 +35,10 @@ public class PostService extends Timestamped {
   private final FileRepository fileRepository;
   private final FileService fileService;
 
+  private final FileUpdateService fileUpdateService;
   private final TokenProvider tokenProvider;
+
+
 
   @Transactional
   public ResponseDto<?> createPost(PostRequestDto requestDto, MultipartFile multipartFile, HttpServletRequest request) {
@@ -143,7 +146,7 @@ public class PostService extends Timestamped {
   }
 
   @Transactional
-  public ResponseDto<?> updatePost(Long id, PostRequestDto requestDto, HttpServletRequest request) {
+  public ResponseDto<?> updatePost(Long id, PostRequestDto requestDto, HttpServletRequest request, MultipartFile images) {
     Member member = validateMember(request);
     if (null == member) {
       throw new CustomException(ErrorCode.JWT_REFRESH_TOKEN_EXPIRED);
@@ -159,6 +162,8 @@ public class PostService extends Timestamped {
     }
 
     post.update(requestDto);
+    fileUpdateService.update(images);
+
     return ResponseDto.success(
             PostResponseDto.builder()
                     .id(post.getId())

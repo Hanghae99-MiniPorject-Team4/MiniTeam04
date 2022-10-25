@@ -37,9 +37,10 @@ public class PostController {
   }
 
   @RequestMapping(value = "/api/auth/posts/{id}", method = RequestMethod.PUT)
-  public ResponseDto<?> updatePost(@PathVariable Long id, @RequestBody PostRequestDto postRequestDto,
-      HttpServletRequest request) {
-    return postService.updatePost(id, postRequestDto, request);
+  public ResponseDto<?> updatePost(@PathVariable Long id,@RequestParam(value = "postDto") String requestDto,
+      HttpServletRequest request,@RequestPart(value = "images", required = false) MultipartFile multipartFile) {
+    PostRequestDto convertedDto = postRequestConverter.convert(requestDto);
+    return postService.updatePost(id, convertedDto, request, multipartFile);
   }
 
   @RequestMapping(value = "/api/auth/posts/{id}", method = RequestMethod.DELETE)
