@@ -32,12 +32,13 @@ public class CommentService {
   public ResponseDto<?> createComment(Long postId, CommentRequestDto requestDto, HttpServletRequest request) {
     Member member = validateMember(request);
     if (null == member) {
-      throw new CustomException(ErrorCode.JWT_REFRESH_TOKEN_EXPIRED);
+      return CustomException.toResponse(new CustomException(ErrorCode.NOT_FOUND_POST));
+//      throw new CustomException(ErrorCode.JWT_REFRESH_TOKEN_EXPIRED);
     }
 
     Post post = postService.isPresentPost(postId);
     if (null == post) {
-      throw new CustomException(ErrorCode.NOT_FOUND_POST);
+      return CustomException.toResponse(new CustomException(ErrorCode.NOT_FOUND_POST));
     }
 
     Comment comment = Comment.builder()
@@ -62,7 +63,7 @@ public class CommentService {
   public ResponseDto<?> getAllCommentsByPost(Long postId) {
     Post post = postService.isPresentPost(postId);
     if (null == post) {
-      throw new CustomException(ErrorCode.NOT_FOUND_POST);
+      return CustomException.toResponse(new CustomException(ErrorCode.NOT_FOUND_POST));
     }
 
     List<Comment> commentList = commentRepository.findAllByPost(post);
@@ -87,17 +88,17 @@ public class CommentService {
   public ResponseDto<?> updateComment(Long id, CommentRequestDto requestDto, HttpServletRequest request) {
     Member member =  validateMember(request);
     if (null == member) {
-      throw new CustomException(ErrorCode.JWT_REFRESH_TOKEN_EXPIRED);
+      return CustomException.toResponse(new CustomException(ErrorCode.JWT_REFRESH_TOKEN_EXPIRED));
     }
 
 
     Comment comment = isPresentComment(id);
     if (null == comment) {
-      throw new CustomException(ErrorCode.NOT_FOUND_COMMENT);
+      return CustomException.toResponse(new CustomException(ErrorCode.NOT_FOUND_COMMENT));
     }
 
     if (comment.validateMember(member)) {
-      throw new CustomException(ErrorCode.NOT_HAVE_PERMISSION);
+      return CustomException.toResponse(new CustomException(ErrorCode.NOT_HAVE_PERMISSION));
     }
 
     comment.update(requestDto);
@@ -116,16 +117,16 @@ public class CommentService {
   public ResponseDto<?> deleteComment(Long id, HttpServletRequest request) {
     Member member =  validateMember(request);
     if (null == member) {
-      throw new CustomException(ErrorCode.JWT_REFRESH_TOKEN_EXPIRED);
+      return CustomException.toResponse(new CustomException(ErrorCode.JWT_REFRESH_TOKEN_EXPIRED));
     }
 
     Comment comment = isPresentComment(id);
     if (null == comment) {
-      throw new CustomException(ErrorCode.NOT_FOUND_COMMENT);
+      return CustomException.toResponse(new CustomException(ErrorCode.NOT_FOUND_COMMENT));
     }
 
     if (comment.validateMember(member)) {
-      throw new CustomException(ErrorCode.NOT_HAVE_PERMISSION);
+      return CustomException.toResponse(new CustomException(ErrorCode.NOT_HAVE_PERMISSION));
     }
 
 
