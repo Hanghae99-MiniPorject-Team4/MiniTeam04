@@ -34,7 +34,6 @@ public class FileUpdateService {
         postRepository.save(post);
 
         Files files = Files.builder()
-                .post(post)
                 .url(fileUrl)
                 .build();
         fileRepository.save(files);

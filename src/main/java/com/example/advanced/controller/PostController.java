@@ -21,12 +21,11 @@ public class PostController {
   private final PostService postService;
   private final PostRequestConverter postRequestConverter;
   @SwaggerAnnotation
-  @RequestMapping(value = "/api/auth/posts", method = RequestMethod.POST,consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = "application/json")
-  public ResponseDto<?> createPost(@RequestPart(value = "images", required = false) MultipartFile multipartFile,
-                                   @RequestPart(value = "postDto") String requestDto,
+  @RequestMapping(value = "/api/auth/posts", method = RequestMethod.POST,consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE}, produces = "application/json")
+  public ResponseDto<?> createPost(@RequestPart(value = "postDto") String requestDto,@RequestParam(value = "images", required = false) MultipartFile images,
                                    HttpServletRequest request) throws IOException {
     PostRequestDto convertedDto = postRequestConverter.convert(requestDto);
-    return postService.createPost(convertedDto, multipartFile, request);
+    return postService.createPost(convertedDto, images, request);
   }
 
   @RequestMapping(value = "/api/posts/{id}", method = RequestMethod.GET)
@@ -41,11 +40,10 @@ public class PostController {
 
   @SwaggerAnnotation
   @RequestMapping(value = "/api/auth/posts/{id}", method = RequestMethod.PUT)
-  public ResponseDto<?> updatePost(@PathVariable Long id,@RequestPart(value = "postDto") String requestDto,
-      HttpServletRequest request,@RequestPart(value = "images", required = false) MultipartFile multipartFile) {
+  public ResponseDto<?> updatePost(@PathVariable Long id,@RequestPart(value = "postDto") String requestDto,@RequestParam(value = "images", required = false) MultipartFile images,
+                                   HttpServletRequest request) {
     PostRequestDto convertedDto = postRequestConverter.convert(requestDto);
-
-    return postService.updatePost(id, convertedDto, request, multipartFile);
+    return postService.updatePost(id, convertedDto, request, images);
   }
   @SwaggerAnnotation
   @RequestMapping(value = "/api/auth/posts/{id}", method = RequestMethod.DELETE)
