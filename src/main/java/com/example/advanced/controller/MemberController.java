@@ -31,6 +31,10 @@ public class MemberController {
     return memberService.login(requestDto, response);
   }
 
+  @RequestMapping(value = "/users/nickcheck",method = RequestMethod.POST)
+  public ResponseDto<?> nickCheck(@RequestBody MemberRequestDto requestDto){
+    return memberService.isNickCheck(requestDto);
+  }
 
   @RequestMapping(value = "/api/auth/members/logout", method = RequestMethod.POST)
   public ResponseDto<?> logout(HttpServletRequest request) {
