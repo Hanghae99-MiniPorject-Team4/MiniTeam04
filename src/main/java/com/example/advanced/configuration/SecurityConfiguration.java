@@ -65,6 +65,8 @@ public class SecurityConfiguration {
         .antMatchers("/api/posts/**").permitAll()
         .antMatchers("/api/comments/**").permitAll()
         .antMatchers( "/v2/api-docs",
+                "/h2-console/**",
+                "/h2-console",
                 "/swagger-resources",
                 "/swagger-resources/**",
                 "/configuration/ui",

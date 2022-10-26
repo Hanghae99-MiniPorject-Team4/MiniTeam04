@@ -2,6 +2,7 @@ package com.example.advanced.service;
 
 import com.example.advanced.controller.exception.ErrorCode;
 import com.example.advanced.controller.handler.CustomException;
+import com.example.advanced.controller.request.FileDto;
 import com.example.advanced.controller.request.PostRequestDto;
 import com.example.advanced.controller.response.CommentResponseDto;
 import com.example.advanced.controller.response.PostListResponseDto;
@@ -32,45 +33,31 @@ public class PostService extends Timestamped {
 
   private final CommentRepository commentRepository;
 
-  private final FileRepository fileRepository;
-  private final FileService fileService;
-
-  private final FileUpdateService fileUpdateService;
   private final TokenProvider tokenProvider;
 
 
 
   @Transactional
-  public ResponseDto<?> createPost(PostRequestDto requestDto, MultipartFile images, HttpServletRequest request) throws IOException {
+  public ResponseDto<?> createPost(PostRequestDto requestDto, HttpServletRequest request)  {
     Member member = validateMember(request);
     if (null == member) {
       throw new CustomException(ErrorCode.JWT_REFRESH_TOKEN_EXPIRED);
     }
 
-    String fileUrl = fileService.uploadFile(images);
-
-
     Post post = Post.builder()
             .title(requestDto.getTitle())
             .content(requestDto.getContent())
             .category(requestDto.getCategory())
-            .images(fileUrl)
             .member(member)
             .build();
     postRepository.save(post);
-
-    Files files = Files.builder()
-            .url(fileUrl)
-            .build();
-    fileRepository.save(files);
-
 
     return ResponseDto.success(
             PostResponseDto.builder()
                     .id(post.getId())
                     .title(post.getTitle())
                     .content(post.getContent())
-                    .imgUrl(fileUrl)
+                    .imgUrl(post.getImages())
                     .author(post.getMember().getNickname())
                     .category(post.getCategory())
                     .createdAt(post.getCreatedAt())
@@ -140,7 +127,7 @@ public class PostService extends Timestamped {
   }
 
   @Transactional
-  public ResponseDto<?> updatePost(Long id, PostRequestDto requestDto, HttpServletRequest request, MultipartFile images) {
+  public ResponseDto<?> updatePost(Long id, PostRequestDto requestDto, HttpServletRequest request) {
     Member member = validateMember(request);
     if (null == member) {
       throw new CustomException(ErrorCode.JWT_REFRESH_TOKEN_EXPIRED);
@@ -156,8 +143,6 @@ public class PostService extends Timestamped {
     }
 
     post.update(requestDto);
-    fileUpdateService.update(images);
-
     return ResponseDto.success(
             PostResponseDto.builder()
                     .id(post.getId())
@@ -189,7 +174,7 @@ public class PostService extends Timestamped {
     }
 
     postRepository.delete(post);
-    return ResponseDto.success("delete success");
+     return ResponseDto.success("delete success");
   }
 
 

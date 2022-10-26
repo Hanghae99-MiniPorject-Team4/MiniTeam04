@@ -3,6 +3,8 @@ package com.example.advanced.controller;
 import com.example.advanced.configuration.SwaggerAnnotation;
 import com.example.advanced.controller.request.PostRequestDto;
 import com.example.advanced.controller.response.ResponseDto;
+import com.example.advanced.service.FileService;
+import com.example.advanced.service.FileUpdateService;
 import com.example.advanced.service.PostService;
 import javax.servlet.http.HttpServletRequest;
 
@@ -19,14 +21,24 @@ import java.io.IOException;
 public class PostController {
 
   private final PostService postService;
-  private final PostRequestConverter postRequestConverter;
+
+  private final FileUpdateService fileService;
+
   @SwaggerAnnotation
-  @RequestMapping(value = "/api/auth/posts", method = RequestMethod.POST,consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE}, produces = "application/json")
-  public ResponseDto<?> createPost(@RequestPart(value = "postDto") String requestDto,@RequestParam(value = "images", required = false) MultipartFile images,
-                                   HttpServletRequest request) throws IOException {
-    PostRequestDto convertedDto = postRequestConverter.convert(requestDto);
-    return postService.createPost(convertedDto, images, request);
+  @RequestMapping(value = "/api/auth/posts", method = RequestMethod.POST,consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = "application/json")
+  public ResponseDto<?> createPost(@RequestBody PostRequestDto requestDto,
+                                   HttpServletRequest request) {
+    return postService.createPost(requestDto, request);
   }
+
+  @RequestMapping(value = "/api/auth/images", method = RequestMethod.POST,consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+  public ResponseDto<?> createImage(@RequestParam(value = "images", required = false) MultipartFile images,
+                                   HttpServletRequest request) {
+    fileService.createImage(images, request);
+    return ResponseDto.success("Image upload success!");
+  }
+
+
 
   @RequestMapping(value = "/api/posts/{id}", method = RequestMethod.GET)
   public ResponseDto<?> getPost(@PathVariable Long id) {
@@ -39,11 +51,16 @@ public class PostController {
   }
 
   @SwaggerAnnotation
-  @RequestMapping(value = "/api/auth/posts/{id}", method = RequestMethod.PUT)
-  public ResponseDto<?> updatePost(@PathVariable Long id,@RequestPart(value = "postDto") String requestDto,@RequestParam(value = "images", required = false) MultipartFile images,
+  @RequestMapping(value = "/api/auth/posts/{id}", method = RequestMethod.PUT,consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = "application/json")
+  public ResponseDto<?> updatePost(@PathVariable Long id, @RequestBody PostRequestDto requestDto,
                                    HttpServletRequest request) {
-    PostRequestDto convertedDto = postRequestConverter.convert(requestDto);
-    return postService.updatePost(id, convertedDto, request, images);
+    return postService.updatePost(id, requestDto, request);
+  }
+
+  @RequestMapping(value = "/api/auth/images", method = RequestMethod.PUT,consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+  public ResponseDto<?> updateImage(HttpServletRequest request, @RequestParam(value = "images", required = false) MultipartFile images) {
+    fileService.update(images, request);
+    return ResponseDto.success("Image update success!");
   }
   @SwaggerAnnotation
   @RequestMapping(value = "/api/auth/posts/{id}", method = RequestMethod.DELETE)

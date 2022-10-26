@@ -87,6 +87,7 @@ public class TokenProvider {
                 isAssignableFrom(authentication.getClass())) {
             return null;
         }
+        //return ((UserDetailsImpl) authentication.getPrincipal()).getMember();
         return ((UserDetailsImpl) authentication.getPrincipal()).getMember();
     }
 
