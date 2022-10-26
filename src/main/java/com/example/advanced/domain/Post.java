@@ -9,6 +9,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+
 @Builder
 @Getter
 @NoArgsConstructor
@@ -23,15 +24,11 @@ public class Post extends Timestamped {
   @Column(nullable = false)
   private String title;
 
-  @Column(nullable = false)
+  @Column
   private String content;
 
   @Column
   private String images;
-
-
-  @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-  private List<Comment> comments;
 
   @JoinColumn(name = "member_id", nullable = false)
   @ManyToOne(fetch = FetchType.LAZY)
@@ -42,6 +39,8 @@ public class Post extends Timestamped {
 
   @Convert(converter = CategoryConverter.class)
   private Category category;
+
+
 
   public void update(PostRequestDto postRequestDto) {
     this.title = postRequestDto.getTitle();

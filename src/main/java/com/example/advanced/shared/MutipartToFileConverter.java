@@ -9,13 +9,13 @@ import org.springframework.web.multipart.MultipartFile;
 
 @Component
 public class MutipartToFileConverter {
-  public Optional<File> convert(MultipartFile file) throws IOException {
+  public Optional<File> convert(MultipartFile images) throws IOException {
     File convertFile = new File(
-        System.getProperty("user.dir") + file.getOriginalFilename()
+        System.getProperty("user.dir") +"/"+ images.getOriginalFilename()
     );
     if(convertFile.createNewFile()) {
       try (FileOutputStream fos = new FileOutputStream(convertFile)) {
-        fos.write(file.getBytes());
+        fos.write(images.getBytes());
       }
       return Optional.of(convertFile);
     }

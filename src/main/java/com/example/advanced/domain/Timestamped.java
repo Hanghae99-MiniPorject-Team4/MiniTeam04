@@ -1,6 +1,7 @@
 package com.example.advanced.domain;
 
 import java.time.LocalDateTime;
+import javax.persistence.Column;
 import javax.persistence.EntityListeners;
 import javax.persistence.MappedSuperclass;
 import lombok.Getter;
@@ -14,9 +15,11 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 public abstract class Timestamped {
 
   @CreatedDate
+  @Column(nullable = false)
   private LocalDateTime createdAt;
 
   @LastModifiedDate
+  @Column(nullable = false)
   private LocalDateTime modifiedAt;
 
 }

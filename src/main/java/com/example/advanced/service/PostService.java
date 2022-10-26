@@ -41,18 +41,14 @@ public class PostService extends Timestamped {
 
 
   @Transactional
-  public ResponseDto<?> createPost(PostRequestDto requestDto, MultipartFile multipartFile, HttpServletRequest request) {
+  public ResponseDto<?> createPost(PostRequestDto requestDto, MultipartFile images, HttpServletRequest request) throws IOException {
     Member member = validateMember(request);
     if (null == member) {
       throw new CustomException(ErrorCode.JWT_REFRESH_TOKEN_EXPIRED);
     }
 
-    String fileUrl = "";
+    String fileUrl = fileService.uploadFile(images);
 
-    try {
-      fileUrl = fileService.uploadFile(multipartFile);
-    } catch (IOException e) {
-    }
 
     Post post = Post.builder()
             .title(requestDto.getTitle())
@@ -64,8 +60,6 @@ public class PostService extends Timestamped {
     postRepository.save(post);
 
     Files files = Files.builder()
-            .post(post)
-            .member(member)
             .url(fileUrl)
             .build();
     fileRepository.save(files);
