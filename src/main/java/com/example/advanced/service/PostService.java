@@ -41,13 +41,13 @@ public class PostService extends Timestamped {
 
 
   @Transactional
-  public ResponseDto<?> createPost(PostRequestDto requestDto, MultipartFile multipartFile, HttpServletRequest request) throws IOException {
+  public ResponseDto<?> createPost(PostRequestDto requestDto, MultipartFile images, HttpServletRequest request) throws IOException {
     Member member = validateMember(request);
     if (null == member) {
       throw new CustomException(ErrorCode.JWT_REFRESH_TOKEN_EXPIRED);
     }
 
-    String fileUrl = fileService.uploadFile(multipartFile);
+    String fileUrl = fileService.uploadFile(images);
 
 
     Post post = Post.builder()
@@ -86,7 +86,8 @@ public class PostService extends Timestamped {
   public ResponseDto<?> getPost(Long id) {
     Post post = isPresentPost(id);
     if (null == post) {
-      throw new CustomException(ErrorCode.NOT_FOUND_POST);
+      return CustomException.toResponse(new CustomException(ErrorCode.NOT_FOUND_POST));
+
     }
 
     List<Comment> commentList = commentRepository.findAllByPost(post);
@@ -146,16 +147,16 @@ public class PostService extends Timestamped {
   public ResponseDto<?> updatePost(Long id, PostRequestDto requestDto, HttpServletRequest request, MultipartFile images) {
     Member member = validateMember(request);
     if (null == member) {
-      throw new CustomException(ErrorCode.JWT_REFRESH_TOKEN_EXPIRED);
+      return CustomException.toResponse(new CustomException(ErrorCode.JWT_REFRESH_TOKEN_EXPIRED));
     }
 
     Post post = isPresentPost(id);
     if (null == post) {
-      throw new CustomException(ErrorCode.NOT_FOUND_POST);
+      return CustomException.toResponse(new CustomException(ErrorCode.NOT_FOUND_POST));
     }
 
     if (post.validateMember(member)) {
-      throw new CustomException(ErrorCode.NOT_HAVE_PERMISSION);
+      return CustomException.toResponse(new CustomException(ErrorCode.NOT_HAVE_PERMISSION));
     }
 
     post.update(requestDto);
@@ -179,16 +180,16 @@ public class PostService extends Timestamped {
   public ResponseDto<?> deletePost(Long id, HttpServletRequest request) {
     Member member = validateMember(request);
     if (null == member) {
-      throw new CustomException(ErrorCode.JWT_REFRESH_TOKEN_EXPIRED);
+      return CustomException.toResponse(new CustomException(ErrorCode.JWT_REFRESH_TOKEN_EXPIRED));
     }
 
     Post post = isPresentPost(id);
     if (null == post) {
-      throw new CustomException(ErrorCode.NOT_FOUND_POST);
+      return CustomException.toResponse(new CustomException(ErrorCode.NOT_FOUND_POST));
     }
 
     if (post.validateMember(member)) {
-      throw new CustomException(ErrorCode.NOT_HAVE_PERMISSION);
+      return CustomException.toResponse(new CustomException(ErrorCode.NOT_HAVE_PERMISSION));
     }
 
     postRepository.delete(post);

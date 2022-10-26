@@ -13,8 +13,9 @@ import java.lang.annotation.Target;
 @ApiImplicitParams({
         @ApiImplicitParam(
                 name = "Refresh_Token",
+                value = "Refresh 토큰",
                 required = true,
-                dataType = "string",
+                dataTypeClass = String.class,
                 paramType = "header"
         )
 })

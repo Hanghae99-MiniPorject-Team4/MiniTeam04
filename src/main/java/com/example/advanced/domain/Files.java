@@ -13,7 +13,7 @@ import javax.persistence.*;
 public class Files {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     @Column(nullable = false)
@@ -23,8 +23,7 @@ public class Files {
     @ManyToOne(fetch = FetchType.LAZY)
     private Member member;
 
-    @JoinColumn(name = "post_id", nullable = false)
-    @ManyToOne(fetch = FetchType.LAZY)
+    @OneToOne(mappedBy = "files")
     private Post post;
 
 }
