@@ -86,26 +86,13 @@ public class MemberService extends Timestamped {
     );
   }
 
-
-  /*public ResponseDto<?> reissue(HttpServletRequest request, HttpServletResponse response) {
-    if (!tokenProvider.validateToken(request.getHeader("Access-Token"))) {
-      return ResponseDto.fail("INVALID_TOKEN", "access token is invalid");
+  @Transactional(readOnly = true)
+  public ResponseDto<?> isNickCheck(MemberRequestDto requestDto){
+    if (null != isPresentMember(requestDto.getNickname())) {
+      return ResponseDto.fail("DUPLICATED_NICKNAME", "중복된 닉네임 입니다.");
     }
-    Member member = tokenProvider.getMemberFromAuthentication();
-    if (null == member) {
-      return ResponseDto.fail("MEMBER_NOT_FOUND",
-              "member not found");
-    }
-
-    Authentication authentication = tokenProvider.getAuthentication(request.getHeader("Access-Token"));
-    if (!accessToken.getValue().equals(request.getHeader("Access-Token"))) {
-      return ResponseDto.fail("INVALID_TOKEN", "refresh token is invalid");
-    }
-
-    TokenDto tokenDto = tokenProvider.generateTokenDto((Member) authentication);
-    tokenToHeaders(tokenDto, response);
-    return ResponseDto.success("success");
-  }*/
+    return ResponseDto.success("NICK_CHECK_SUCCESS");
+  }
 
 
   public ResponseDto<?> logout(HttpServletRequest request) {
