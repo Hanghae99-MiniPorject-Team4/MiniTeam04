@@ -66,11 +66,11 @@ public class MemberService extends Timestamped {
   public ResponseDto<?> login(LoginRequestDto requestDto, HttpServletResponse response) {
     Member member = isPresentMember(requestDto.getNickname());
     if (null == member) {
-      throw new CustomException(ErrorCode.NOT_FOUND_MEMBER);
+      return CustomException.toResponse(new CustomException(ErrorCode.NOT_FOUND_MEMBER));
     }
 
     if (!member.validatePassword(passwordEncoder, requestDto.getPassword())) {
-      throw new CustomException(ErrorCode.NOT_HAVE_PERMISSION);
+      return CustomException.toResponse(new CustomException(ErrorCode.NOT_HAVE_PERMISSION));
     }
 
     TokenDto tokenDto = tokenProvider.generateTokenDto(member);

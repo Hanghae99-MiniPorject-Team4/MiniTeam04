@@ -17,7 +17,8 @@ public class UploaderExceptionHandler {
   public ResponseDto<?> handle(EmptyMultipartFileException ex) {
     return ResponseDto.fail(
         "EMPTY",
-        "multipart file is empty"
+        ex.getMessage()
+//        "multipart file is empty"
     );
   }
 

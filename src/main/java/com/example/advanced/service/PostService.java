@@ -2,7 +2,6 @@ package com.example.advanced.service;
 
 import com.example.advanced.controller.exception.ErrorCode;
 import com.example.advanced.controller.handler.CustomException;
-import com.example.advanced.controller.request.FileDto;
 import com.example.advanced.controller.request.PostRequestDto;
 import com.example.advanced.controller.response.CommentResponseDto;
 import com.example.advanced.controller.response.PostListResponseDto;
@@ -14,7 +13,6 @@ import com.example.advanced.repository.CommentRepository;
 import com.example.advanced.repository.FileRepository;
 import com.example.advanced.repository.PostRepository;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -23,7 +21,6 @@ import javax.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @RequiredArgsConstructor
@@ -32,6 +29,7 @@ public class PostService extends Timestamped {
   private final PostRepository postRepository;
 
   private final CommentRepository commentRepository;
+
 
   private final TokenProvider tokenProvider;
 
@@ -70,7 +68,8 @@ public class PostService extends Timestamped {
   public ResponseDto<?> getPost(Long id) {
     Post post = isPresentPost(id);
     if (null == post) {
-      throw new CustomException(ErrorCode.NOT_FOUND_POST);
+      return CustomException.toResponse(new CustomException(ErrorCode.NOT_FOUND_POST));
+
     }
 
     List<Comment> commentList = commentRepository.findAllByPost(post);
@@ -130,16 +129,16 @@ public class PostService extends Timestamped {
   public ResponseDto<?> updatePost(Long id, PostRequestDto requestDto, HttpServletRequest request) {
     Member member = validateMember(request);
     if (null == member) {
-      throw new CustomException(ErrorCode.JWT_REFRESH_TOKEN_EXPIRED);
+      return CustomException.toResponse(new CustomException(ErrorCode.JWT_REFRESH_TOKEN_EXPIRED));
     }
 
     Post post = isPresentPost(id);
     if (null == post) {
-      throw new CustomException(ErrorCode.NOT_FOUND_POST);
+      return CustomException.toResponse(new CustomException(ErrorCode.NOT_FOUND_POST));
     }
 
     if (post.validateMember(member)) {
-      throw new CustomException(ErrorCode.NOT_HAVE_PERMISSION);
+      return CustomException.toResponse(new CustomException(ErrorCode.NOT_HAVE_PERMISSION));
     }
 
     post.update(requestDto);
@@ -161,16 +160,16 @@ public class PostService extends Timestamped {
   public ResponseDto<?> deletePost(Long id, HttpServletRequest request) {
     Member member = validateMember(request);
     if (null == member) {
-      throw new CustomException(ErrorCode.JWT_REFRESH_TOKEN_EXPIRED);
+      return CustomException.toResponse(new CustomException(ErrorCode.JWT_REFRESH_TOKEN_EXPIRED));
     }
 
     Post post = isPresentPost(id);
     if (null == post) {
-      throw new CustomException(ErrorCode.NOT_FOUND_POST);
+      return CustomException.toResponse(new CustomException(ErrorCode.NOT_FOUND_POST));
     }
 
     if (post.validateMember(member)) {
-      throw new CustomException(ErrorCode.NOT_HAVE_PERMISSION);
+      return CustomException.toResponse(new CustomException(ErrorCode.NOT_HAVE_PERMISSION));
     }
 
     postRepository.delete(post);
