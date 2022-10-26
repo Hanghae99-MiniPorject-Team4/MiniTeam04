@@ -16,7 +16,7 @@ import lombok.*;
 public class Post extends Timestamped {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
   @Column(nullable = false)
@@ -35,8 +35,6 @@ public class Post extends Timestamped {
   @OneToMany(mappedBy = "post", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
   private List<Comment> commentList;
 
-  @OneToOne
-  private Files files;
 
   @Convert(converter = CategoryConverter.class)
   private Category category;
