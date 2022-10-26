@@ -1,5 +1,6 @@
 package com.example.advanced.controller;
 
+import com.example.advanced.configuration.SwaggerAnnotation;
 import com.example.advanced.controller.request.LoginRequestDto;
 import com.example.advanced.controller.request.MemberRequestDto;
 import com.example.advanced.controller.response.ResponseDto;
@@ -31,7 +32,7 @@ public class MemberController {
     return memberService.login(requestDto, response);
   }
 
-
+  @SwaggerAnnotation
   @RequestMapping(value = "/api/auth/members/logout", method = RequestMethod.POST)
   public ResponseDto<?> logout(HttpServletRequest request) {
     return memberService.logout(request);

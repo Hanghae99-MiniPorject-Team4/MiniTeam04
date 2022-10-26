@@ -3,11 +3,8 @@ package com.example.advanced.service;
 
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.ObjectMetadata;
-import com.example.advanced.controller.exception.ErrorCode;
 import com.example.advanced.controller.exception.FileConvertException;
 import com.example.advanced.controller.exception.RemoveFileException;
-import com.example.advanced.controller.handler.CustomException;
-import com.example.advanced.jwt.TokenProvider;
 import com.example.advanced.shared.MutipartToFileConverter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,10 +12,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import software.amazon.awssdk.services.s3.S3Client;
 
 import java.io.*;
-import java.net.URL;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.util.Objects;
@@ -39,19 +34,15 @@ public class FileService {
 
     private final MutipartToFileConverter mutipartToFileConverter;
 
-    public String uploadFile(MultipartFile multipartFile
+    public String uploadFile(MultipartFile images
     ) throws IOException {
 
-        if (multipartFile.isEmpty()) {
-            throw new CustomException(ErrorCode.EMPTY_MULTIPART_FILE);
-        }
-
-        File licenseFile = mutipartToFileConverter.convert(multipartFile)
+        File licenseFile = mutipartToFileConverter.convert(images)
                 .orElseThrow(FileConvertException::new);
 
-        if (multipartFile.isEmpty()) {
+  /*      if (multipartFile.isEmpty()) {
             throw new CustomException(ErrorCode.EMPTY_MULTIPART_FILE);
-        }
+        }*/
 
         String now = Instant
                 .now().atZone(ZoneId.of("Asia/Seoul")).toString()
@@ -59,16 +50,16 @@ public class FileService {
                 .replace("Z", "")
                 .replace("[Asia/Seoul]", "");
         String fileName = BUCKET_PATH + now + UUID.randomUUID() + "."
-                + Objects.requireNonNull(multipartFile.getOriginalFilename()).split("\\.")[1];
+                + Objects.toString(images.getOriginalFilename()).split("\\.")[1];
 
         System.out.println("fileName = " + fileName);
 
         ObjectMetadata objMeta = new ObjectMetadata();
-        objMeta.setContentType(multipartFile.getContentType());
-        objMeta.setContentLength(multipartFile.getInputStream().available());
+        objMeta.setContentType(images.getContentType());
+        objMeta.setContentLength(images.getInputStream().available());
 
         //PutObjectRequest는 Aws S3 버킷에 업로드할 객체 메타 데이터와 파일 데이터로 이루어져있다.
-        amazonS3.putObject(BUCKET, fileName, multipartFile.getInputStream(),objMeta);
+        amazonS3.putObject(BUCKET, fileName, images.getInputStream(),objMeta);
         removeNewFile(licenseFile);
 
         return amazonS3.getUrl(BUCKET, fileName).toString();
@@ -105,7 +96,7 @@ public class FileService {
             is.close();
             os.close();
         } catch (IOException e) {
-            // TODO Auto-generated catch block
+
             e.printStackTrace();
         }
 
