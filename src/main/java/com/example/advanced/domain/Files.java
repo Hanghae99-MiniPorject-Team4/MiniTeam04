@@ -19,9 +19,4 @@ public class Files {
     @Column(nullable = false)
     private String url;
 
-    @JoinColumn(name = "user_id")
-    @ManyToOne(fetch = FetchType.EAGER)
-    private Member member;
-
-
 }
