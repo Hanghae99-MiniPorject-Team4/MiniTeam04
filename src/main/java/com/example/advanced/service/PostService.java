@@ -70,7 +70,6 @@ public class PostService extends Timestamped {
     Post post = isPresentPost(id);
     if (null == post) {
       return CustomException.toResponse(new CustomException(ErrorCode.NOT_FOUND_POST));
-
     }
 
     List<Comment> commentList = commentRepository.findAllByPost(post);
@@ -88,6 +87,7 @@ public class PostService extends Timestamped {
       );
     }
     Files image = fileRepository.findById(id).orElse(null);
+    if(image == null) return ResponseDto.fail("fail", "이미지 없음");
     return ResponseDto.success(
             PostResponseDto.builder()
                     .id(post.getId())
@@ -109,6 +109,7 @@ public class PostService extends Timestamped {
     List<PostListResponseDto> postListResponseDtoList = new ArrayList<>();
     for (Post post : postList) {
       Files image = fileRepository.findById(post.getId()).orElse(null);
+      if(image == null) continue;
       int comments = commentRepository.countAllByPost(post);
       postListResponseDtoList.add(
               PostListResponseDto.builder()
@@ -175,7 +176,7 @@ public class PostService extends Timestamped {
     }
 
     postRepository.delete(post);
-     return ResponseDto.success("delete success");
+    return ResponseDto.success("delete success");
   }
 
 
@@ -194,4 +195,3 @@ public class PostService extends Timestamped {
   }
 
 }
-

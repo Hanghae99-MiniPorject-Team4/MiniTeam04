@@ -22,7 +22,7 @@ public class RefreshToken extends Timestamped {
   @Column(nullable = false)
   private Long id;
 
-  @JoinColumn(name = "member_id", nullable = false)
+  @JoinColumn(name = "user_id", nullable = false)
   @OneToOne(fetch = FetchType.LAZY)
   private Member member;
 

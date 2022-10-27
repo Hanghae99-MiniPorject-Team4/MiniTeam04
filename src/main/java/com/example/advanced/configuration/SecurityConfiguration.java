@@ -47,6 +47,11 @@ public class SecurityConfiguration {
   public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
     http.cors();
+    http
+            .headers()
+            .xssProtection()
+            .and()
+            .contentSecurityPolicy("script-src 'self'");
 
     http.csrf().disable()
 
