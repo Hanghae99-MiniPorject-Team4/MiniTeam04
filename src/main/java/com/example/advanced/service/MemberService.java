@@ -61,6 +61,13 @@ public class MemberService extends Timestamped {
                     .build()
     );
   }
+  @Transactional(readOnly = true)
+  public ResponseDto<?> isNickCheck(MemberRequestDto requestDto){
+    if (null != isPresentMember(requestDto.getNickname())) {
+      return ResponseDto.fail("DUPLICATED_NICKNAME", "중복된 닉네임 입니다.");
+    }
+    return ResponseDto.success("중복확인 완료");
+  }
 
   @Transactional
   public ResponseDto<?> login(LoginRequestDto requestDto, HttpServletResponse response) {
