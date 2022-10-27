@@ -30,6 +30,7 @@ public class PostService extends Timestamped {
 
   private final CommentRepository commentRepository;
 
+  private final FileRepository fileRepository;
 
   private final TokenProvider tokenProvider;
 
@@ -86,14 +87,14 @@ public class PostService extends Timestamped {
                       .build()
       );
     }
-
+    Files image = fileRepository.findById(id).orElse(null);
     return ResponseDto.success(
             PostResponseDto.builder()
                     .id(post.getId())
                     .title(post.getTitle())
                     .content(post.getContent())
                     .author(post.getMember().getNickname())
-                    .imgUrl((post.getImages()))
+                    .imgUrl(image.getUrl())
                     .category(post.getCategory())
                     .comments(commentResponseDtoList)
                     .createdAt(post.getCreatedAt())
@@ -107,6 +108,7 @@ public class PostService extends Timestamped {
     List<Post> postList = postRepository.findAllByOrderByModifiedAtDesc();
     List<PostListResponseDto> postListResponseDtoList = new ArrayList<>();
     for (Post post : postList) {
+      Files image = fileRepository.findById(post.getId()).orElse(null);
       int comments = commentRepository.countAllByPost(post);
       postListResponseDtoList.add(
               PostListResponseDto.builder()
@@ -114,7 +116,7 @@ public class PostService extends Timestamped {
                       .title(post.getTitle())
                       .content(post.getContent())
                       .author(post.getMember().getNickname())
-                      .imgUrl(post.getImages())
+                      .imgUrl(image.getUrl())
                       .commentsNum(comments)
                       .createdAt(post.getCreatedAt())
                       .modifiedAt(post.getModifiedAt())
