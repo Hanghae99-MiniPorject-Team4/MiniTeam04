@@ -4,14 +4,12 @@ import com.example.advanced.controller.request.PostRequestDto;
 import java.util.List;
 import javax.persistence.*;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 
 @Builder
 @Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
@@ -30,12 +28,13 @@ public class Post extends Timestamped {
   @Column
   private String images;
 
-  @JoinColumn(name = "member_id", nullable = false)
-  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "user_id")
+  @ManyToOne(fetch = FetchType.EAGER)
   private Member member;
 
-  @OneToMany(mappedBy = "post", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+  @OneToMany(mappedBy = "post", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
   private List<Comment> commentList;
+
 
   @Convert(converter = CategoryConverter.class)
   private Category category;

@@ -73,11 +73,11 @@ public class MemberService extends Timestamped {
   public ResponseDto<?> login(LoginRequestDto requestDto, HttpServletResponse response) {
     Member member = isPresentMember(requestDto.getNickname());
     if (null == member) {
-      throw new CustomException(ErrorCode.NOT_FOUND_MEMBER);
+      return CustomException.toResponse(new CustomException(ErrorCode.NOT_FOUND_MEMBER));
     }
 
     if (!member.validatePassword(passwordEncoder, requestDto.getPassword())) {
-      throw new CustomException(ErrorCode.NOT_HAVE_PERMISSION);
+      return CustomException.toResponse(new CustomException(ErrorCode.NOT_HAVE_PERMISSION));
     }
 
     TokenDto tokenDto = tokenProvider.generateTokenDto(member);
@@ -93,26 +93,13 @@ public class MemberService extends Timestamped {
     );
   }
 
-
-  /*public ResponseDto<?> reissue(HttpServletRequest request, HttpServletResponse response) {
-    if (!tokenProvider.validateToken(request.getHeader("Access-Token"))) {
-      return ResponseDto.fail("INVALID_TOKEN", "access token is invalid");
+  @Transactional(readOnly = true)
+  public ResponseDto<?> isNickCheck(MemberRequestDto requestDto){
+    if (null != isPresentMember(requestDto.getNickname())) {
+      return ResponseDto.fail("DUPLICATED_NICKNAME", "중복된 닉네임 입니다.");
     }
-    Member member = tokenProvider.getMemberFromAuthentication();
-    if (null == member) {
-      return ResponseDto.fail("MEMBER_NOT_FOUND",
-              "member not found");
-    }
-
-    Authentication authentication = tokenProvider.getAuthentication(request.getHeader("Access-Token"));
-    if (!accessToken.getValue().equals(request.getHeader("Access-Token"))) {
-      return ResponseDto.fail("INVALID_TOKEN", "refresh token is invalid");
-    }
-
-    TokenDto tokenDto = tokenProvider.generateTokenDto((Member) authentication);
-    tokenToHeaders(tokenDto, response);
-    return ResponseDto.success("success");
-  }*/
+    return ResponseDto.success("NICK_CHECK_SUCCESS");
+  }
 
 
   public ResponseDto<?> logout(HttpServletRequest request) {

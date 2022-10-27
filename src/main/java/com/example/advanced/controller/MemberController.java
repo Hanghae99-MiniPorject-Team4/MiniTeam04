@@ -44,4 +44,9 @@ public class MemberController {
   public ResponseDto<?> logout(HttpServletRequest request) {
     return memberService.logout(request);
   }
+  @RequestMapping(value = "/api/members/nickcheck",method = RequestMethod.POST)
+  public ResponseDto<?> nickCheck(@RequestBody MemberRequestDto requestDto){
+    return memberService.isNickCheck(requestDto);
+  }
+
 }

@@ -16,8 +16,9 @@ public class UploaderExceptionHandler {
   @ExceptionHandler(EmptyMultipartFileException.class)
   public ResponseDto<?> handle(EmptyMultipartFileException ex) {
     return ResponseDto.fail(
-        "EMPTY",
-        "multipart file is empty"
+            "EMPTY",
+            ex.getMessage()
+//        "multipart file is empty"
     );
   }
 
@@ -25,8 +26,8 @@ public class UploaderExceptionHandler {
   @ExceptionHandler(FileConvertException.class)
   public ResponseDto<?> handle(FileConvertException ex) {
     return ResponseDto.fail(
-        "CONVERT_FAIL",
-        "fail convert multipart to file"
+            "CONVERT_FAIL",
+            "fail convert multipart to file"
     );
   }
 
@@ -34,8 +35,8 @@ public class UploaderExceptionHandler {
   @ExceptionHandler(RemoveFileException.class)
   public ResponseDto<?> handle(RemoveFileException ex) {
     return ResponseDto.fail(
-        "REMOVE_FAIL",
-        "fail to file remove"
+            "REMOVE_FAIL",
+            "fail to file remove"
     );
   }
 }
