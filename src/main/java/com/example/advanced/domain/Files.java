@@ -13,17 +13,10 @@ import javax.persistence.*;
 public class Files {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @Column
     private String url;
-
-    @JoinColumn(name = "member_id", nullable = false)
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Member member;
-
-    @OneToOne(mappedBy = "files")
-    private Post post;
 
 }

@@ -22,6 +22,4 @@ public class PostRequestConverter implements Converter<String, PostRequestDto> {
         return objectMapper.readValue(value, new TypeReference<>() {
         });
     }
-
-
 }

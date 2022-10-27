@@ -4,20 +4,19 @@ import com.example.advanced.controller.request.PostRequestDto;
 import java.util.List;
 import javax.persistence.*;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
+
 
 @Builder
 @Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
 public class Post extends Timestamped {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
   @Column(nullable = false)
@@ -29,19 +28,14 @@ public class Post extends Timestamped {
   @Column
   private String images;
 
+  @JoinColumn(name = "user_id")
 
-  @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-  private List<Comment> comments;
-
-  @JoinColumn(name = "member_id", nullable = false)
   @ManyToOne(fetch = FetchType.LAZY)
   private Member member;
 
-  @OneToMany(mappedBy = "post", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+  @OneToMany(mappedBy = "post", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
   private List<Comment> commentList;
 
-  @OneToOne
-  private Files files;
 
   @Convert(converter = CategoryConverter.class)
   private Category category;

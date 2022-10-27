@@ -13,7 +13,6 @@ import com.example.advanced.repository.CommentRepository;
 import com.example.advanced.repository.FileRepository;
 import com.example.advanced.repository.PostRepository;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -22,7 +21,6 @@ import javax.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @RequiredArgsConstructor
@@ -33,47 +31,32 @@ public class PostService extends Timestamped {
   private final CommentRepository commentRepository;
 
   private final FileRepository fileRepository;
-  private final FileService fileService;
 
-  private final FileUpdateService fileUpdateService;
   private final TokenProvider tokenProvider;
 
 
 
   @Transactional
-  public ResponseDto<?> createPost(PostRequestDto requestDto, MultipartFile images, HttpServletRequest request) throws IOException {
+  public ResponseDto<?> createPost(PostRequestDto requestDto, HttpServletRequest request)  {
     Member member = validateMember(request);
     if (null == member) {
       throw new CustomException(ErrorCode.JWT_REFRESH_TOKEN_EXPIRED);
     }
 
-    String fileUrl = fileService.uploadFile(images);
-
-
     Post post = Post.builder()
-            .id(member.getId())
             .title(requestDto.getTitle())
             .content(requestDto.getContent())
             .category(requestDto.getCategory())
-            .images(fileUrl)
             .member(member)
             .build();
     postRepository.save(post);
-
-    Files files = Files.builder()
-            .post(post)
-            .member(member)
-            .url(fileUrl)
-            .build();
-    fileRepository.save(files);
-
 
     return ResponseDto.success(
             PostResponseDto.builder()
                     .id(post.getId())
                     .title(post.getTitle())
                     .content(post.getContent())
-                    .imgUrl(fileUrl)
+                    .imgUrl(post.getImages())
                     .author(post.getMember().getNickname())
                     .category(post.getCategory())
                     .createdAt(post.getCreatedAt())
@@ -87,7 +70,6 @@ public class PostService extends Timestamped {
     Post post = isPresentPost(id);
     if (null == post) {
       return CustomException.toResponse(new CustomException(ErrorCode.NOT_FOUND_POST));
-
     }
 
     List<Comment> commentList = commentRepository.findAllByPost(post);
@@ -104,14 +86,15 @@ public class PostService extends Timestamped {
                       .build()
       );
     }
-
+    Files image = fileRepository.findById(id).orElse(null);
+    if(image == null) return ResponseDto.fail("fail", "이미지 없음");
     return ResponseDto.success(
             PostResponseDto.builder()
                     .id(post.getId())
                     .title(post.getTitle())
                     .content(post.getContent())
                     .author(post.getMember().getNickname())
-                    .imgUrl((post.getImages()))
+                    .imgUrl(image.getUrl())
                     .category(post.getCategory())
                     .comments(commentResponseDtoList)
                     .createdAt(post.getCreatedAt())
@@ -125,6 +108,8 @@ public class PostService extends Timestamped {
     List<Post> postList = postRepository.findAllByOrderByModifiedAtDesc();
     List<PostListResponseDto> postListResponseDtoList = new ArrayList<>();
     for (Post post : postList) {
+      Files image = fileRepository.findById(post.getId()).orElse(null);
+      if(image == null) continue;
       int comments = commentRepository.countAllByPost(post);
       postListResponseDtoList.add(
               PostListResponseDto.builder()
@@ -132,7 +117,7 @@ public class PostService extends Timestamped {
                       .title(post.getTitle())
                       .content(post.getContent())
                       .author(post.getMember().getNickname())
-                      .imgUrl(post.getImages())
+                      .imgUrl(image.getUrl())
                       .commentsNum(comments)
                       .createdAt(post.getCreatedAt())
                       .modifiedAt(post.getModifiedAt())
@@ -144,7 +129,7 @@ public class PostService extends Timestamped {
   }
 
   @Transactional
-  public ResponseDto<?> updatePost(Long id, PostRequestDto requestDto, HttpServletRequest request, MultipartFile images) {
+  public ResponseDto<?> updatePost(Long id, PostRequestDto requestDto, HttpServletRequest request) {
     Member member = validateMember(request);
     if (null == member) {
       return CustomException.toResponse(new CustomException(ErrorCode.JWT_REFRESH_TOKEN_EXPIRED));
@@ -160,8 +145,6 @@ public class PostService extends Timestamped {
     }
 
     post.update(requestDto);
-    fileUpdateService.update(images);
-
     return ResponseDto.success(
             PostResponseDto.builder()
                     .id(post.getId())
@@ -212,4 +195,3 @@ public class PostService extends Timestamped {
   }
 
 }
-

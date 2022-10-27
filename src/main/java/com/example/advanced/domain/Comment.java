@@ -28,12 +28,12 @@ public class Comment extends Timestamped {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  @JoinColumn(name = "member_id", nullable = false)
-  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "user_id")
+  @ManyToOne(fetch = FetchType.EAGER)
   private Member member;
 
   @JoinColumn(name = "post_id", nullable = false)
-  @ManyToOne(fetch = FetchType.LAZY)
+  @ManyToOne(fetch = FetchType.EAGER)
   private Post post;
 
   @Column(nullable = false)
