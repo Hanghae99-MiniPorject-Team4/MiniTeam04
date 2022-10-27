@@ -29,10 +29,11 @@ public class Post extends Timestamped {
   private String images;
 
   @JoinColumn(name = "user_id")
+
   @ManyToOne(fetch = FetchType.LAZY)
   private Member member;
 
-  @OneToMany(mappedBy = "post", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+  @OneToMany(mappedBy = "post", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
   private List<Comment> commentList;
 
 
